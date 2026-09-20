@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e5e9f0">
+<title>Cumple Jere</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Doto:ROND,wght@100,400..900&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#e5e9f0;
+  --ink:#11151f;
+  --ink-2:#4a5266;
+  --ink-3:#7a8398;
+  --focus:#2a86a3;
+  --font:'Geist',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'Geist Mono',ui-monospace,Menlo,Consolas,monospace;
+  --dot:'Doto','Geist Mono',ui-monospace,Menlo,monospace;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  padding-inline:16px;
+  padding-block:18px 36px;
+  background-color:var(--ground);
+  background-image:
+    radial-gradient(70% 38% at 100% 0%,#cbd6ea 0,transparent 70%),
+    radial-gradient(60% 34% at 0% 62%,#efe2ee 0,transparent 70%),
+    radial-gradient(70% 30% at 90% 100%,#d3e6ec 0,transparent 70%);
+  color:var(--ink);
+  font:400 16px/1.5 var(--font);
+  min-height:100vh;
+}
+.wrap{max-width:440px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3,p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+a{color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.glass :focus-visible{outline-color:#fff}
+
+/* ---------- barra superior ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 4px 0}
+.eyebrow{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+.demo-tag{font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:rgba(17,21,31,.08);color:var(--ink-2)}
+
+/* ---------- vidrio ---------- */
+.glass{position:relative;isolation:isolate;overflow:hidden;color:#fff}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:2;
+  box-shadow:inset 0 0 26px 5px rgba(232,238,246,.5),inset 0 0 0 1px rgba(255,255,255,.22)}
+.glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+  background:var(--grain);opacity:.2}
+.glass>*{position:relative;z-index:3}
+.dot-num{font-family:var(--dot);font-weight:700;font-variation-settings:"ROND" 100;line-height:1;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.round{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.08);color:#fff;text-decoration:none;font-size:18px;line-height:1;cursor:pointer}
+
+/* ---------- portada ---------- */
+html{scroll-behavior:smooth}
+.cover{display:flex;flex-direction:column;gap:12px;min-height:calc(100svh - 100px)}
+.cover-card{flex:1;min-height:480px;padding:26px 22px;container-type:inline-size;display:block}
+.cover-title{margin:0;display:flex;flex-direction:column;gap:2px;font-family:var(--dot);font-weight:800;font-variation-settings:"ROND" 100;text-transform:uppercase;line-height:.88;letter-spacing:.01em}
+.cover-title .t1{font-size:26cqw;color:#fff;text-shadow:0 0 26px rgba(255,255,255,.35)}
+.cover-title .t2{font-size:40cqw;background:linear-gradient(180deg,#ff8ae0 0%,#ffb066 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 20px rgba(255,120,200,.5))}
+.cover-date{position:absolute;left:22px;bottom:24px;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:2px;max-width:58%}
+.cover-date .d-day,.cover-date .d-month{font-weight:700;font-size:19px;letter-spacing:.1em;line-height:1.2;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.cover-date .d-num{font-size:96px;text-shadow:0 0 22px rgba(255,255,255,.3)}
+.cover-date .d-time{margin-top:12px;background:#fff;color:var(--ink);font-weight:700;font-size:20px;letter-spacing:.05em;padding:9px 16px;border-radius:999px;line-height:1}
+.kid{position:absolute;right:10px;bottom:0;z-index:3;height:57%;width:auto;max-width:52%;object-fit:contain;object-position:bottom right;filter:drop-shadow(0 16px 22px rgba(0,0,0,.45))}
+.big-cta{display:flex;align-items:center;justify-content:center;gap:12px;min-height:70px;padding:12px 20px;border-radius:999px;text-decoration:none;text-align:center;
+  font-weight:700;font-size:15px;letter-spacing:.05em;line-height:1.2;color:var(--ink);
+  background:linear-gradient(100deg,#ff8ad8 0%,#ffb066 100%);
+  box-shadow:0 22px 38px -16px rgba(255,100,170,.9),inset 0 0 0 1px rgba(255,255,255,.75),inset 0 0 20px rgba(255,255,255,.5);
+  animation:glow 2.6s ease-in-out infinite}
+.big-cta .plus{font-size:30px;font-weight:300;line-height:1}
+.big-cta:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@keyframes glow{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.big-cta{animation:none}}
+.stack{display:flex;flex-direction:column;gap:14px;scroll-margin-top:16px}
+.place-hint{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.95)}
+a.pill-place{text-decoration:none;color:#fff}
+a.pill-place[href]{cursor:pointer}
+
+/* ---------- hero ---------- */
+.hero{border-radius:44px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:14px;
+  background:
+    radial-gradient(90% 60% at 100% 38%,rgba(196,122,152,.7),transparent 65%),
+    radial-gradient(85% 60% at 15% 108%,rgba(70,192,208,.9),transparent 65%),
+    radial-gradient(70% 50% at 0% 0%,#0a101c,transparent 70%),
+    linear-gradient(170deg,#1b2539 0%,#101b2d 48%,#1d4b60 100%);
+  box-shadow:0 34px 60px -34px rgba(20,30,50,.6)}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.hero-title{font-size:21px;font-weight:400;letter-spacing:-.01em;line-height:1.2;padding-top:2px;text-wrap:balance}
+.date-row{display:flex;align-items:flex-end;gap:16px}
+.date-row .dot-num{font-size:104px;margin-left:-4px}
+.date-meta{display:flex;flex-direction:column;gap:6px;padding-bottom:10px;font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.moments{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:2px}
+.moment{background:none;border:0;padding:8px 4px;text-align:center;cursor:pointer;color:rgba(255,255,255,.55);display:flex;flex-direction:column;gap:3px;border-radius:16px}
+.moment b{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.moment span{font-size:14px;line-height:1.2}
+.moment[aria-pressed="true"]{color:#fff}
+.moment[aria-pressed="true"] span{font-weight:500}
+.moment-detail{text-align:center;font-size:15px;line-height:1.4;color:rgba(255,255,255,.9);min-height:2.8em;text-wrap:balance}
+.week{display:flex;justify-content:space-between;gap:4px}
+.week span{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);
+  font:500 12px/1 var(--mono);color:rgba(255,255,255,.62)}
+.week span.on{background:#fff;color:var(--ink);border-color:#fff;box-shadow:0 0 18px rgba(255,255,255,.45)}
+.week-cap{text-align:center;font:400 12px/1 var(--mono);letter-spacing:.08em;color:rgba(255,255,255,.7)}
+
+.intro{font-size:18px;line-height:1.45;color:var(--ink);padding:6px 6px 2px;text-wrap:pretty;max-width:36ch}
+.intro em{font-style:normal;color:var(--ink-2)}
+
+/* ---------- píldoras ---------- */
+.pills{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pill{border-radius:46px;min-height:124px;padding:16px 14px 14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.pill .ring{position:absolute;inset:8px;border-radius:38px;border:1px dotted rgba(255,255,255,.5);pointer-events:none;z-index:3}
+.pill .lbl{font-size:13px;line-height:1;color:rgba(255,255,255,.92)}
+.pill .val{font-size:17px;line-height:1.2;font-weight:500;text-wrap:balance}
+.pill .big{font-size:46px}
+.pill .unit{font:400 12px/1 var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.85)}
+.pill-pink{background:radial-gradient(110% 80% at 30% 0%,#ff62d4 0%,#c95bb9 34%,transparent 74%),linear-gradient(180deg,#8a4b64,#2e2a26)}
+.pill-indigo{background:radial-gradient(100% 70% at 15% 0%,#3d3fa0 0%,transparent 70%),linear-gradient(180deg,#1f2160 0%,#0d1030 100%)}
+.pill-orange{background:linear-gradient(180deg,#b23f2e 0%,#ee7b2f 58%,#f8ae55 100%)}
+.pill-cta{background:radial-gradient(120% 120% at 72% 18%,#fff 0%,#f2f5fa 55%,#dde4ee 100%);color:var(--ink);text-decoration:none;
+  box-shadow:0 18px 30px -20px rgba(30,40,60,.55),inset 0 0 0 1px #fff}
+.pill-cta::before{box-shadow:inset 0 0 22px 3px rgba(190,200,215,.55)!important}
+.pill-cta::after{opacity:.1}
+.pill-cta .plus{font:300 44px/1 var(--font)}
+.pill-cta .lbl{color:var(--ink);font-weight:500;font-size:14px}
+.pill-cta:focus-visible{outline-color:var(--focus)}
+
+/* ---------- formulario ---------- */
+.panel{border-radius:38px;padding:22px 18px 20px;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.85);box-shadow:0 24px 44px -30px rgba(30,40,60,.4);display:flex;flex-direction:column;gap:18px}
+.panel h2{font-size:28px;font-weight:500;letter-spacing:-.02em;line-height:1.1}
+.panel .sub{color:var(--ink-2);font-size:15px;margin-top:6px}
+.field{display:flex;flex-direction:column;gap:8px;border:0;padding:0;margin:0;min-width:0}
+.field>label,.field>legend,.lab{font:500 11px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);padding:0}
+.input{width:100%;font-size:16px;color:var(--ink);background:rgba(255,255,255,.8);border:1px solid rgba(17,21,31,.1);border-radius:999px;padding:14px 18px;outline:none;-webkit-appearance:none;appearance:none}
+textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.4}
+.input::placeholder{color:var(--ink-3)}
+.input:focus-visible{border-color:var(--focus);box-shadow:0 0 0 3px rgba(42,134,163,.3);outline:none}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:rgba(17,21,31,.07);border-radius:999px}
+.seg label,.chip{position:relative;display:block}
+.seg input,.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:block;text-align:center;padding:12px 6px;border-radius:999px;font-weight:500;font-size:15px;color:var(--ink-2);transition:background .2s,color .2s}
+.seg input:checked+span{background:var(--ink);color:#fff}
+.seg input:focus-visible+span,.chip input:focus-visible+span{outline:2px solid var(--focus);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip span{display:block;padding:11px 18px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(17,21,31,.1);font-size:15px;font-weight:500;color:var(--ink);transition:background .2s,color .2s}
+.chip input:checked+span{background:var(--ink);color:#fff;border-color:var(--ink)}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:46px;height:46px;border-radius:50%;border:1px solid rgba(17,21,31,.18);background:rgba(255,255,255,.7);font-size:22px;line-height:1;cursor:pointer}
+.stepper button:disabled{opacity:.35;cursor:default}
+.stepper .dot-num{font-size:44px;min-width:1.4ch;text-align:center;color:var(--ink)}
+.stepper .hint{font-size:14px;color:var(--ink-2);line-height:1.3}
+.cta{border:0;border-radius:999px;background:var(--ink);color:#fff;font-size:17px;font-weight:500;padding:17px 20px;cursor:pointer;width:100%;
+  box-shadow:0 18px 30px -18px rgba(17,21,31,.7)}
+.cta:disabled{opacity:.6;cursor:default}
+.cta.ghost{background:rgba(17,21,31,.07);color:var(--ink);box-shadow:none}
+.err{color:#9a2f27;font-size:14px;line-height:1.35;min-height:0}
+.err:empty{display:none}
+.done{gap:14px}
+.done .dot-num{font-size:64px;color:var(--ink)}
+.summary{display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--ink-2)}
+.summary b{color:var(--ink);font-weight:500}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 6px;font:400 12px/1.3 var(--mono);color:var(--ink-3)}
+.foot a{color:var(--ink-3)}
+
+/* ---------- panel del anfitrión ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;margin-top:4px}
+.stats div{display:flex;flex-direction:column;gap:6px;align-items:center}
+.stats .dot-num{font-size:34px}
+.stats span{font:400 11px/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.admin-hero .big-count{display:flex;align-items:flex-end;gap:14px}
+.admin-hero .big-count .dot-num{font-size:120px;margin-left:-4px}
+.admin-hero .big-count span{padding-bottom:16px;font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.panel h3{font-size:19px;font-weight:500;letter-spacing:-.01em}
+.panel .cap{font-size:13px;color:var(--ink-2);line-height:1.4}
+.food{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.food>div{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:24px;background:rgba(255,255,255,.65)}
+.food .dot-num{font-size:34px;color:var(--ink)}
+.food small{font:400 12px/1.3 var(--mono);color:var(--ink-2)}
+.grams{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grams .input{padding:11px 14px;border-radius:16px}
+.bars{display:flex;flex-direction:column;gap:14px}
+.bar-row{display:flex;flex-direction:column;gap:6px}
+.bar-head{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:500}
+.bar-head .n{font:500 14px/1 var(--mono);font-variant-numeric:tabular-nums}
+.track{height:10px;border-radius:999px;background:rgba(17,21,31,.08);overflow:hidden}
+.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#c95bb9,#ee7b2f);min-width:0;transition:width .5s}
+.sub-list{font-size:13px;color:var(--ink-2);line-height:1.4}
+.guests{display:flex;flex-direction:column}
+.guest{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 2px;border-top:1px solid rgba(17,21,31,.1)}
+.guest:first-child{border-top:0}
+.guest .nm{font-weight:500;font-size:16px}
+.guest .meta{grid-column:1/-1;font-size:13px;color:var(--ink-2);line-height:1.4}
+.tag{font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;align-self:start;white-space:nowrap}
+.tag-si{background:#d6f0e2;color:#12583b}
+.tag-capaz{background:#fae9c6;color:#734808}
+.tag-no{background:#f6d9d5;color:#86302a}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;transition:opacity .25s,transform .25s;z-index:10;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (max-width:360px){.date-row .dot-num{font-size:88px}.pill .big{font-size:38px}.row2,.food{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap" id="guest">
+  <div class="topbar">
+    <span class="eyebrow">Invitación</span>
+    <span class="demo-tag" id="demoTag" hidden>Modo demo · datos de ejemplo</span>
+  </div>
+
+  <section class="cover" aria-labelledby="heroTitle">
+    <div class="glass hero cover-card">
+      <h1 class="cover-title" id="heroTitle"><span class="t1">Cumple</span><span class="t2">Jere</span></h1>
+      <div class="cover-date">
+        <span class="d-day">SÁBADO</span>
+        <span class="dot-num d-num">26</span>
+        <span class="d-month">DE SEPTIEMBRE</span>
+        <span class="d-time">12:00 HS</span>
+      </div>
+      <img class="kid" src="nene.webp" width="284" height="729" alt="Jere de chiquito, con anteojos de sol, corriendo">
+    </div>
+    <a class="big-cta" href="#info"><span class="plus" aria-hidden="true">+</span><span>INFO / CONFIRMAR ASISTENCIA</span></a>
+  </section>
+
+  <div class="stack" id="info">
+  <section class="glass hero" aria-labelledby="planTitle">
+    <div class="hero-top">
+      <h2 class="hero-title" id="planTitle">El plan del sábado</h2>
+    </div>
+    <div class="chart">
+      <svg viewBox="0 0 320 110" role="img" aria-label="Curva del día: mediodía, tarde y noche">
+        <defs>
+          <linearGradient id="cg" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+            <stop offset=".22" stop-color="#fff" stop-opacity=".95"/>
+            <stop offset=".78" stop-color="#fff" stop-opacity=".95"/>
+            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <line x1="0" y1="92" x2="320" y2="92" stroke="#fff" stroke-opacity=".4" stroke-width="1.4" stroke-dasharray=".1 6" stroke-linecap="round"/>
+        <path id="curve" d="M0 92 C70 92 96 18 160 18 C224 18 250 92 320 92" fill="none" stroke="url(#cg)" stroke-width="1.8" stroke-linecap="round"/>
+        <g id="marks"></g>
+        <line id="vline" x1="160" y1="30" x2="160" y2="92" stroke="#fff" stroke-opacity=".75" stroke-width="1.4" stroke-dasharray=".1 5" stroke-linecap="round"/>
+        <g id="knob">
+          <circle r="12" fill="#fff" fill-opacity=".22" stroke="#fff" stroke-opacity=".55"/>
+          <circle r="3" fill="#fff"/>
+        </g>
+      </svg>
+    </div>
+    <div class="moments" role="group" aria-label="Momentos del día">
+      <button class="moment" type="button" data-i="0" aria-pressed="false"><b>12:00</b><span>Comer</span></button>
+      <button class="moment" type="button" data-i="1" aria-pressed="true"><b>Tarde</b><span>Mates y juegos</span></button>
+      <button class="moment" type="button" data-i="2" aria-pressed="false"><b>Noche</b><span>A ver qué onda</span></button>
+    </div>
+    <p class="moment-detail" id="momentDetail" aria-live="polite"></p>
+    <div class="week" aria-label="Semana del 20 al 26 de septiembre; el cumple es el sábado 26">
+      <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span class="on">S</span>
+    </div>
+    <p class="week-cap" aria-hidden="true">20 – 26 sep</p>
+  </section>
+
+  <p class="intro">Desde las 12 hs arrancamos con algo para comer, después pasamos la tarde con mates y juegos de mesa, <em>y a la noche vemos qué onda.</em></p>
+
+  <div class="pills">
+    <div class="glass pill pill-pink">
+      <span class="ring"></span>
+      <span class="lbl">Confirmados</span>
+      <span class="dot-num big" id="countNum">–</span>
+      <span class="unit">personas</span>
+    </div>
+    <div class="glass pill pill-indigo">
+      <span class="ring"></span>
+      <span class="lbl">Menú</span>
+      <span class="val" id="pillMenu">Pollo frito con papas fritas</span>
+    </div>
+    <a class="glass pill pill-orange pill-place" id="placeLink">
+      <span class="ring"></span>
+      <span class="lbl">Lugar</span>
+      <span class="val" id="pillPlace">A confirmar</span>
+      <span class="place-hint" id="placeHint" hidden>Abrir en Maps ↗</span>
+    </a>
+    <a class="glass pill pill-cta" href="#confirmar" id="ctaPill">
+      <span class="plus" aria-hidden="true">+</span>
+      <span class="lbl">Confirmar</span>
+    </a>
+  </div>
+
+  <section class="panel" id="confirmar" aria-labelledby="formTitle">
+    <div id="formPanel" style="display:contents">
+      <div>
+        <h2 id="formTitle">¿Venís?</h2>
+        <p class="sub">Avisame si venís, cuántos son y qué querés tomar. Así sé cuánto comprar.</p>
+      </div>
+      <form id="rsvp" style="display:contents" novalidate>
+        <div class="field">
+          <label for="name">Tu nombre</label>
+          <input class="input" id="name" name="name" type="text" autocomplete="given-name" maxlength="80" placeholder="Nombre y apellido" required>
+        </div>
+        <fieldset class="field">
+          <legend>Asistencia</legend>
+          <div class="seg">
+            <label><input type="radio" name="status" value="si"><span>Voy</span></label>
+            <label><input type="radio" name="status" value="capaz"><span>Capaz</span></label>
+            <label><input type="radio" name="status" value="no"><span>No puedo</span></label>
+          </div>
+        </fieldset>
+        <div id="goingFields" style="display:contents" hidden>
+          <div class="field">
+            <span class="lab" id="partyLab">Cuántos van (contándote)</span>
+            <div class="stepper" role="group" aria-labelledby="partyLab">
+              <button type="button" id="partyMinus" aria-label="Uno menos">–</button>
+              <span class="dot-num" id="partyNum" aria-live="polite">1</span>
+              <button type="button" id="partyPlus" aria-label="Uno más">+</button>
+            </div>
+          </div>
+          <fieldset class="field">
+            <legend>Qué te pinta tomar</legend>
+            <div class="chips" id="drinkChips"></div>
+          </fieldset>
+          <div class="field" id="beerField" hidden>
+            <label for="beer">¿Qué marca de cerveza?</label>
+            <input class="input" id="beer" type="text" maxlength="80" placeholder="Ej: Quilmes, Patagonia, la que haya">
+          </div>
+          <div class="field" id="otherField" hidden>
+            <label for="other">Otros: ¿qué querés tomar?</label>
+            <input class="input" id="other" type="text" maxlength="120" placeholder="Lo que quieras">
+          </div>
+        </div>
+        <div class="field">
+          <label for="note">Algo que tengamos que saber (opcional)</label>
+          <textarea class="input" id="note" maxlength="280" placeholder="Alergias, llego más tarde, etc."></textarea>
+        </div>
+        <p class="err" id="formErr" role="alert"></p>
+        <button class="cta" type="submit" id="submitBtn">Confirmar</button>
+      </form>
+    </div>
+    <div class="done" id="donePanel" hidden style="display:flex;flex-direction:column;gap:14px">
+      <div class="dot-num" aria-hidden="true">OK</div>
+      <div>
+        <h2 id="doneTitle">Listo</h2>
+        <p class="sub" id="doneSub"></p>
+      </div>
+      <div class="summary" id="doneSummary"></div>
+      <button class="cta ghost" type="button" id="editBtn">Cambiar mi respuesta</button>
+    </div>
+  </section>
+
+  <div class="foot"><span>Sábado 26 · 12:00 hs</span><a href="#admin">Anfitrión</a></div>
+  </div>
+</div>
+
+<div class="wrap" id="admin" hidden>
+  <div class="topbar">
+    <span class="eyebrow">Panel del anfitrión</span>
+    <a class="eyebrow" href="#" id="leaveAdmin">Salir</a>
+  </div>
+  <section class="panel" id="gate">
+    <div>
+      <h2>Entrar</h2>
+      <p class="sub">Poné tu clave para ver quién viene.</p>
+    </div>
+    <form id="gateForm" style="display:contents">
+      <div class="field">
+        <label for="pin">Clave</label>
+        <input class="input" id="pin" type="password" autocomplete="current-password" placeholder="Clave del anfitrión">
+      </div>
+      <p class="err" id="gateErr" role="alert"></p>
+      <button class="cta" type="submit">Entrar</button>
+    </form>
+  </section>
+  <div id="adminBody" style="display:contents"></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ============ CONFIGURACIÓN ============
+   Con supabaseUrl vacío la app corre en modo demo (datos locales de ejemplo).
+   Para usarla de verdad: completar url y clave publicable de Supabase. */
+const CFG = { supabaseUrl: 'https://duzjqpewgnccdcgxmwpr.supabase.co', supabaseKey: 'sb_publishable_3j_lvKz3cbk4ZX5DraiaXg_A6EXl5mw' };
+const DEMO_PIN = '1234';
+const DEFAULT_EVENT = { menu: 'Pollo frito con papas fritas', address: '', maps_url: '' };
+const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
+const mapsHref = ev => safeUrl(ev.maps_url) || (ev.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.address) : '');
+const DRINKS = [['cerveza','Cerveza'],['fernet','Fernet'],['vino','Vino'],['gaseosa','Gaseosa'],['agua','Agua'],['otros','Otros']];
+const STATUS = { si: 'Va', capaz: 'Capaz', no: 'No va' };
+
+const $ = (s, r = document) => r.querySelector(s);
+const h = (tag, props, ...kids) => {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, '');
+    else if (v !== false && v != null) el.setAttribute(k, v);
+  }
+  kids.flat().forEach(c => { if (c != null && c !== false) el.append(c.nodeType ? c : document.createTextNode(c)); });
+  return el;
+};
+const mk = (store) => ({
+  get(k) { try { return store().getItem(k); } catch { return null; } },
+  set(k, v) { try { store().setItem(k, v); } catch {} },
+  del(k) { try { store().removeItem(k); } catch {} }
+});
+const local = mk(() => localStorage), sess = mk(() => sessionStorage);
+const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }));
+const label = k => (DRINKS.find(d => d[0] === k) || [k, k])[1];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const fmt1 = n => (Math.round(n * 10) / 10).toString().replace('.', ',');
+let toastT;
+const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); };
+
+/* ============ DATOS ============ */
+const demo = (() => {
+  const KEY = 'cumple-demo-v1';
+  let db = null;
+  const seed = () => {
+    const t = n => new Date(Date.now() - n * 3600e3).toISOString();
+    return { event: { ...DEFAULT_EVENT }, rsvps: [
+      { id: 'd1', name: 'Lucía', status: 'si', party: 2, drinks: ['cerveza', 'agua'], beer_brand: 'Patagonia', other_drink: '', note: '', updated_at: t(30) },
+      { id: 'd2', name: 'Martín', status: 'si', party: 1, drinks: ['fernet', 'gaseosa'], beer_brand: '', other_drink: '', note: '', updated_at: t(26) },
+      { id: 'd3', name: 'Cami', status: 'si', party: 1, drinks: ['vino'], beer_brand: '', other_drink: '', note: 'Soy alérgica al maní', updated_at: t(20) },
+      { id: 'd4', name: 'Nico', status: 'capaz', party: 2, drinks: ['cerveza', 'otros'], beer_brand: 'Quilmes', other_drink: 'Gin tonic', note: '', updated_at: t(9) },
+      { id: 'd5', name: 'Sofi', status: 'si', party: 3, drinks: ['gaseosa', 'agua', 'cerveza'], beer_brand: 'Quilmes', other_drink: '', note: '', updated_at: t(5) },
+      { id: 'd6', name: 'Fede', status: 'no', party: 1, drinks: [], beer_brand: '', other_drink: '', note: 'Viajo ese finde', updated_at: t(3) }
+    ] };
+  };
+  const load = () => {
+    if (db) return db;
+    try { const raw = local.get(KEY); if (raw) { db = JSON.parse(raw); return db; } } catch {}
+    db = seed(); return db;
+  };
+  const save = () => local.set(KEY, JSON.stringify(db));
+  const guard = pin => { if (pin !== DEMO_PIN) throw new Error('pin'); };
+  return {
+    async getEvent() { return { ...load().event }; },
+    async publicCount() { const r = load().rsvps; return { personas: r.filter(x => x.status === 'si').reduce((a, x) => a + x.party, 0), respuestas: r.length }; },
+    async submit(rec) {
+      const d = load(), row = { ...rec, updated_at: new Date().toISOString() }, i = d.rsvps.findIndex(x => x.id === rec.id);
+      if (i >= 0) d.rsvps[i] = row; else d.rsvps.push(row);
+      save();
+    },
+    async adminList(pin) { guard(pin); return load().rsvps.map(x => ({ ...x })); },
+    async setEvent(pin, ev) { guard(pin); const d = load(); d.event = { ...d.event, ...ev }; save(); }
+  };
+})();
+
+const remote = (() => {
+  const call = async (fn, args) => {
+    const headers = { apikey: CFG.supabaseKey, 'Content-Type': 'application/json' };
+    if (CFG.supabaseKey.startsWith('eyJ')) headers.Authorization = 'Bearer ' + CFG.supabaseKey;
+    const r = await fetch(`${CFG.supabaseUrl}/rest/v1/rpc/${fn}`, { method: 'POST', headers, body: JSON.stringify(args || {}) });
+    if (!r.ok) {
+      const txt = await r.text();
+      throw new Error(txt.includes('pin_incorrecto') ? 'pin' : 'http ' + r.status);
+    }
+    return r.status === 204 ? null : r.json();
+  };
+  return {
+    async getEvent() { const r = await call('get_event'); return { menu: (r && r.menu) || DEFAULT_EVENT.menu, address: (r && r.address) || '', maps_url: (r && r.maps_url) || '' }; },
+    publicCount: () => call('public_count'),
+    submit: rec => call('submit_rsvp', { p_id: rec.id, p_name: rec.name, p_status: rec.status, p_party: rec.party, p_drinks: rec.drinks, p_beer_brand: rec.beer_brand, p_other_drink: rec.other_drink, p_note: rec.note }),
+    adminList: pin => call('admin_list', { p_pin: pin }),
+    setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url })
+  };
+})();
+
+const IS_DEMO = !CFG.supabaseUrl;
+const api = IS_DEMO ? demo : remote;
+if (IS_DEMO) $('#demoTag').hidden = false;
+
+/* ============ INVITACIÓN ============ */
+let event = { ...DEFAULT_EVENT };
+const MOMENTS = [
+  () => `Arrancamos al mediodía: ${event.menu.toLowerCase()}.`,
+  () => 'Mates y juegos de mesa para pasar la tarde.',
+  () => 'A la noche vemos qué onda.'
+];
+
+// curva + perilla
+const curve = $('#curve'), knob = $('#knob'), vline = $('#vline'), marks = $('#marks');
+const LEN = curve.getTotalLength(), TS = [.15, .5, .85], BASE = 92;
+const at = t => curve.getPointAtLength(LEN * t);
+TS.forEach(t => {
+  const p = at(t), c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', 2.5); c.setAttribute('fill', '#fff'); c.setAttribute('fill-opacity', '.55');
+  marks.append(c);
+});
+const place = t => {
+  const p = at(t);
+  knob.setAttribute('transform', `translate(${p.x} ${p.y})`);
+  vline.setAttribute('x1', p.x); vline.setAttribute('x2', p.x); vline.setAttribute('y1', p.y + 14); vline.setAttribute('y2', BASE);
+  vline.style.display = BASE - p.y < 20 ? 'none' : '';
+};
+let curT = TS[1], raf = 0;
+function moveTo(t) {
+  cancelAnimationFrame(raf);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { curT = t; place(t); return; }
+  const from = curT, t0 = performance.now(), D = 380;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / D), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    curT = from + (t - from) * e; place(curT);
+    if (k < 1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+let sel = 1;
+function pick(i) {
+  sel = i;
+  document.querySelectorAll('.moment').forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+  $('#momentDetail').textContent = MOMENTS[i]();
+  moveTo(TS[i]);
+}
+document.querySelectorAll('.moment').forEach(b => b.addEventListener('click', () => pick(+b.dataset.i)));
+place(TS[1]); pick(1);
+
+function renderEvent() {
+  $('#pillMenu').textContent = event.menu;
+  $('#pillPlace').textContent = event.address || 'A confirmar';
+  const link = $('#placeLink'), href = mapsHref(event);
+  if (href) {
+    link.href = href; link.target = '_blank'; link.rel = 'noopener noreferrer';
+    link.setAttribute('aria-label', `Lugar: ${event.address || 'ver en el mapa'}. Abrir en Maps`);
+  } else { link.removeAttribute('href'); link.removeAttribute('target'); link.removeAttribute('aria-label'); }
+  $('#placeHint').hidden = !href;
+  $('#momentDetail').textContent = MOMENTS[sel]();
+}
+async function loadPublic() {
+  try { event = await api.getEvent(); } catch {}
+  renderEvent();
+  try { const c = await api.publicCount(); $('#countNum').textContent = String(c.personas); } catch { $('#countNum').textContent = '–'; }
+}
+
+// formulario
+const form = $('#rsvp');
+const chipsBox = $('#drinkChips');
+DRINKS.forEach(([k, l]) => chipsBox.append(h('label', { class: 'chip' }, h('input', { type: 'checkbox', name: 'drink', value: k }), h('span', { text: l }))));
+let party = 1;
+const setParty = n => { party = Math.max(1, Math.min(10, n)); $('#partyNum').textContent = String(party); $('#partyMinus').disabled = party <= 1; $('#partyPlus').disabled = party >= 10; };
+$('#partyMinus').addEventListener('click', () => setParty(party - 1));
+$('#partyPlus').addEventListener('click', () => setParty(party + 1));
+const status = () => form.elements['status'].value;
+const drinksOn = () => [...form.querySelectorAll('input[name=drink]:checked')].map(i => i.value);
+function syncFields() {
+  $('#goingFields').hidden = !status() || status() === 'no';
+  const d = drinksOn();
+  $('#beerField').hidden = !d.includes('cerveza');
+  $('#otherField').hidden = !d.includes('otros');
+}
+form.addEventListener('change', syncFields);
+setParty(1); syncFields();
+
+const MINE = 'cumple-mi-respuesta';
+const loadMine = () => { try { return JSON.parse(local.get(MINE) || 'null'); } catch { return null; } };
+
+function fillForm(r) {
+  $('#name').value = r.name || '';
+  const s = form.querySelector(`input[name=status][value="${r.status}"]`); if (s) s.checked = true;
+  setParty(r.party || 1);
+  form.querySelectorAll('input[name=drink]').forEach(i => { i.checked = (r.drinks || []).includes(i.value); });
+  $('#beer').value = r.beer_brand || ''; $('#other').value = r.other_drink || ''; $('#note').value = r.note || '';
+  syncFields();
+}
+function showDone(r) {
+  $('#formPanel').hidden = true; $('#formPanel').style.display = 'none';
+  const d = $('#donePanel'); d.hidden = false; d.style.display = 'flex';
+  const first = r.name.split(' ')[0];
+  $('#doneTitle').textContent = r.status === 'no' ? `Gracias por avisar, ${first}` : `Listo, ${first}`;
+  $('#doneSub').textContent = r.status === 'si' ? 'Anotado. Nos vemos el sábado a las 12.' : r.status === 'capaz' ? 'Anotado como “capaz”. Si te confirmás, cambiá tu respuesta.' : 'Lástima, te vamos a extrañar.';
+  const lines = [];
+  lines.push(h('span', {}, 'Respuesta: ', h('b', { text: r.status === 'si' ? 'Voy' : r.status === 'capaz' ? 'Capaz' : 'No puedo' })));
+  if (r.status !== 'no') {
+    lines.push(h('span', {}, 'Van: ', h('b', { text: String(r.party) })));
+    const dr = (r.drinks || []).map(k => k === 'cerveza' && r.beer_brand ? `Cerveza (${r.beer_brand})` : k === 'otros' && r.other_drink ? `Otros (${r.other_drink})` : label(k));
+    if (dr.length) lines.push(h('span', {}, 'Para tomar: ', h('b', { text: dr.join(', ') })));
+  }
+  $('#doneSummary').replaceChildren(...lines);
+}
+$('#editBtn').addEventListener('click', () => {
+  const r = loadMine(); if (r) fillForm(r);
+  $('#donePanel').hidden = true; $('#donePanel').style.display = 'none';
+  $('#formPanel').hidden = false; $('#formPanel').style.display = 'contents';
+  $('#name').focus();
+});
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#formErr'); err.textContent = '';
+  const name = $('#name').value.trim(), st = status(), dr = drinksOn();
+  if (!name) { err.textContent = 'Poné tu nombre para que sepa quién sos.'; $('#name').focus(); return; }
+  if (!st) { err.textContent = 'Elegí si venís, capaz o no podés.'; return; }
+  if (st !== 'no' && !dr.length) { err.textContent = 'Elegí al menos una bebida (o “Otros” si querés otra cosa).'; return; }
+  const prev = loadMine();
+  const rec = {
+    id: prev && prev.id ? prev.id : uuid(), name, status: st,
+    party: st === 'no' ? 1 : party, drinks: st === 'no' ? [] : dr,
+    beer_brand: st !== 'no' && dr.includes('cerveza') ? $('#beer').value.trim() : '',
+    other_drink: st !== 'no' && dr.includes('otros') ? $('#other').value.trim() : '',
+    note: $('#note').value.trim()
+  };
+  const btn = $('#submitBtn'); btn.disabled = true; btn.textContent = 'Enviando…';
+  try {
+    await api.submit(rec);
+    local.set(MINE, JSON.stringify(rec));
+    showDone(rec); loadPublic();
+    $('#confirmar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch {
+    err.textContent = 'No pudimos guardar tu respuesta. Revisá tu conexión y probá de nuevo.';
+  } finally { btn.disabled = false; btn.textContent = 'Confirmar'; }
+});
+const mine = loadMine(); if (mine) { fillForm(mine); showDone(mine); }
+
+/* ============ PANEL DEL ANFITRIÓN ============ */
+let PIN = sess.get('cumple-pin') || '';
+const gate = $('#gate'), body = $('#adminBody');
+
+function tally(rows) {
+  const live = rows.filter(r => r.status !== 'no');
+  const counts = Object.fromEntries(DRINKS.map(([k]) => [k, 0]));
+  const brands = {}, others = [];
+  live.forEach(r => {
+    (r.drinks || []).forEach(k => { if (k in counts) counts[k]++; });
+    if ((r.drinks || []).includes('cerveza') && r.beer_brand) {
+      r.beer_brand.split(/,|;|\sy\s/i).map(s => s.trim().toLowerCase()).filter(Boolean).forEach(b => { brands[b] = (brands[b] || 0) + 1; });
+    }
+    if ((r.drinks || []).includes('otros') && r.other_drink) others.push(r.other_drink);
+  });
+  return { counts, brands, others };
+}
+
+function renderAdmin(rows) {
+  const sum = a => a.reduce((n, r) => n + (+r.party || 0), 0);
+  const si = rows.filter(r => r.status === 'si'), cp = rows.filter(r => r.status === 'capaz'), no = rows.filter(r => r.status === 'no');
+  const pSi = sum(si), pCp = sum(cp);
+  const { counts, brands, others } = tally(rows);
+
+  const hero = h('section', { class: 'glass hero admin-hero' },
+    h('div', { class: 'hero-top' }, h('h2', { class: 'hero-title', text: 'Quién viene' })),
+    h('div', { class: 'big-count' }, h('div', { class: 'dot-num', text: String(pSi) }), h('span', { text: 'personas\nseguras' })),
+    h('div', { class: 'stats' },
+      h('div', {}, h('div', { class: 'dot-num', text: '+' + pCp }), h('span', { text: 'Capaz' })),
+      h('div', {}, h('div', { class: 'dot-num', text: String(no.length) }), h('span', { text: 'No van' })),
+      h('div', {}, h('div', { class: 'dot-num', text: String(rows.length) }), h('span', { text: 'Respuestas' }))
+    )
+  );
+  hero.querySelector('.big-count span').style.whiteSpace = 'pre-line';
+
+  // comida
+  const inPollo = h('input', { class: 'input', id: 'gPollo', type: 'number', inputmode: 'numeric', min: '0', step: '10', value: '350' });
+  const inPapas = h('input', { class: 'input', id: 'gPapas', type: 'number', inputmode: 'numeric', min: '0', step: '10', value: '250' });
+  const out = {};
+  const box = (title, key) => h('div', {}, h('span', { class: 'lab', text: title }),
+    (out[key + 'P'] = h('div', { class: 'dot-num' })), h('small', { text: 'pollo' }),
+    (out[key + 'F'] = h('div', { class: 'dot-num' })), h('small', { text: 'papas' }));
+  const foodBoxes = h('div', { class: 'food' }, box(`Seguro · ${pSi}`, 's'), box(`Con capaz · ${pSi + pCp}`, 'c'));
+  const calc = () => {
+    const g1 = Math.max(0, +inPollo.value || 0), g2 = Math.max(0, +inPapas.value || 0);
+    out.sP.textContent = fmt1(pSi * g1 / 1000) + ' kg'; out.sF.textContent = fmt1(pSi * g2 / 1000) + ' kg';
+    out.cP.textContent = fmt1((pSi + pCp) * g1 / 1000) + ' kg'; out.cF.textContent = fmt1((pSi + pCp) * g2 / 1000) + ' kg';
+  };
+  inPollo.addEventListener('input', calc); inPapas.addEventListener('input', calc); calc();
+  const food = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Comida' }), h('p', { class: 'cap', text: `Menú actual: ${event.menu}. Ajustá los gramos por persona.` })),
+    h('div', { class: 'grams' },
+      h('div', { class: 'field' }, h('label', { for: 'gPollo', text: 'Pollo g/persona' }), inPollo),
+      h('div', { class: 'field' }, h('label', { for: 'gPapas', text: 'Papas g/persona' }), inPapas)),
+    foodBoxes);
+
+  // bebidas
+  const max = Math.max(1, ...Object.values(counts));
+  const bars = DRINKS.map(([k, l]) => {
+    const row = h('div', { class: 'bar-row' },
+      h('div', { class: 'bar-head' }, h('span', { text: l }), h('span', { class: 'n', text: String(counts[k]) })),
+      h('div', { class: 'track' }, Object.assign(h('div', { class: 'fill' }), { style: `width:${counts[k] / max * 100}%` })));
+    if (k === 'cerveza' && Object.keys(brands).length)
+      row.append(h('p', { class: 'sub-list', text: Object.entries(brands).sort((a, b) => b[1] - a[1]).map(([b, n]) => `${cap(b)} ×${n}`).join(' · ') }));
+    if (k === 'otros' && others.length) row.append(h('p', { class: 'sub-list', text: others.join(' · ') }));
+    return row;
+  });
+  const drinks = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Bebidas' }), h('p', { class: 'cap', text: 'Cuántas respuestas de “voy” o “capaz” eligieron cada una.' })),
+    h('div', { class: 'bars' }, bars));
+
+  // lista
+  const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  const list = h('section', { class: 'panel' },
+    h('h3', { text: `Respuestas (${rows.length})` }),
+    h('div', { class: 'guests' }, sorted.length ? sorted.map(r => {
+      const dr = (r.drinks || []).map(k => k === 'cerveza' && r.beer_brand ? `Cerveza (${r.beer_brand})` : k === 'otros' && r.other_drink ? `Otros (${r.other_drink})` : label(k)).join(', ');
+      const meta = [r.status !== 'no' ? `${r.party} ${r.party === 1 ? 'persona' : 'personas'}` : '', dr, r.note ? `“${r.note}”` : ''].filter(Boolean).join(' · ');
+      return h('div', { class: 'guest' }, h('span', { class: 'nm', text: r.name }), h('span', { class: 'tag tag-' + r.status, text: STATUS[r.status] || r.status }), meta ? h('span', { class: 'meta', text: meta }) : null);
+    }) : h('p', { class: 'cap', text: 'Todavía no respondió nadie.' })));
+
+  // datos del evento
+  const inAddr = h('input', { class: 'input', id: 'evAddr', type: 'text', maxlength: '160', value: event.address, placeholder: 'Calle, número, piso/depto' });
+  const inMaps = h('input', { class: 'input', id: 'evMaps', type: 'url', inputmode: 'url', maxlength: '400', value: event.maps_url || '', placeholder: 'https://maps.app.goo.gl/…' });
+  const inMenu = h('input', { class: 'input', id: 'evMenu', type: 'text', maxlength: '120', value: event.menu });
+  const saveBtn = h('button', { class: 'cta', type: 'button', text: 'Guardar cambios', onclick: async () => {
+    const maps = inMaps.value.trim();
+    if (maps && !safeUrl(maps)) { toast('El link de Maps tiene que empezar con https://'); return; }
+    saveBtn.disabled = true;
+    try { await api.setEvent(PIN, { menu: inMenu.value.trim() || DEFAULT_EVENT.menu, address: inAddr.value.trim(), maps_url: maps }); event = await api.getEvent(); renderEvent(); toast('Guardado'); }
+    catch { toast('No se pudo guardar. Probá de nuevo.'); }
+    finally { saveBtn.disabled = false; }
+  } });
+  const evt = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Datos del cumple' }), h('p', { class: 'cap', text: 'Lo que cambies acá se actualiza para todos los invitados.' })),
+    h('div', { class: 'field' }, h('label', { for: 'evAddr', text: 'Dirección (lo que ven los invitados)' }), inAddr),
+    h('div', { class: 'field' }, h('label', { for: 'evMaps', text: 'Link de Google Maps (opcional)' }), inMaps,
+      h('p', { class: 'cap', text: 'Si no ponés link, Maps se abre buscando la dirección.' })),
+    h('div', { class: 'field' }, h('label', { for: 'evMenu', text: 'Menú' }), inMenu),
+    saveBtn);
+
+  // compartir
+  const url = () => location.href.split('#')[0];
+  const msg = () => `Hago mi cumple el sábado 26 desde las 12 hs 🎂 Comemos algo, tomamos unos mates, jugamos juegos de mesa y a la noche vemos qué onda. Confirmame si venís y qué querés tomar acá: ${url()}`;
+  const share = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Mandar la invitación' }), h('p', { class: 'cap', text: 'Un solo link para todos.' })),
+    h('div', { class: 'row2' },
+      h('button', { class: 'cta', type: 'button', text: 'WhatsApp', onclick: () => window.open('https://wa.me/?text=' + encodeURIComponent(msg()), '_blank', 'noopener') }),
+      h('button', { class: 'cta ghost', type: 'button', text: 'Copiar link', onclick: async () => {
+        try { await navigator.clipboard.writeText(url()); toast('Link copiado'); } catch { toast(url()); }
+      } })));
+
+  const refresh = h('button', { class: 'cta ghost', type: 'button', text: 'Actualizar respuestas', onclick: () => enterAdmin(PIN) });
+  body.replaceChildren(hero, food, drinks, list, evt, share, refresh);
+}
+
+async function enterAdmin(pin) {
+  const rows = await api.adminList(pin);
+  PIN = pin; sess.set('cumple-pin', pin);
+  try { event = await api.getEvent(); } catch {}
+  gate.hidden = true;
+  renderAdmin(rows);
+}
+$('#gateForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#gateErr'); err.textContent = '';
+  try { await enterAdmin($('#pin').value); $('#pin').value = ''; }
+  catch (x) { err.textContent = x.message === 'pin' ? 'La clave no es correcta.' : 'No pudimos conectar. Probá de nuevo.'; }
+});
+$('#leaveAdmin').addEventListener('click', () => { sess.del('cumple-pin'); PIN = ''; body.replaceChildren(); gate.hidden = false; });
+
+/* ============ RUTAS ============ */
+async function route() {
+  const isAdmin = location.hash === '#admin';
+  $('#guest').hidden = isAdmin; $('#admin').hidden = !isAdmin;
+  if (isAdmin) {
+    if (PIN) { try { await enterAdmin(PIN); return; } catch { sess.del('cumple-pin'); PIN = ''; } }
+    gate.hidden = false; body.replaceChildren();
+    if (IS_DEMO) $('#gateForm .field').append(h('p', { class: 'cap', text: 'Modo demo: la clave es 1234.' }));
+  } else if (location.hash === '#confirmar') {
+    document.getElementById('confirmar').scrollIntoView({ behavior: 'smooth' });
+  }
+}
+$('#leaveAdmin').setAttribute('href', '#');
+window.addEventListener('hashchange', route);
+loadPublic().then(route);
+})();
+</script>
+</body>
+</html>
