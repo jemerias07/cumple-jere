@@ -135,6 +135,20 @@ a.pill-place[href]{cursor:pointer}
 .pill-cta .lbl{color:var(--ink);font-weight:500;font-size:14px}
 .pill-cta:focus-visible{outline-color:var(--focus)}
 
+.pill-baile{background:radial-gradient(100% 70% at 80% 0%,#25c3c8 0%,transparent 65%),linear-gradient(180deg,#1a5a86 0%,#241a5c 100%)}
+.pill .unit2{font:400 11px/1.2 var(--mono);letter-spacing:.04em;color:rgba(255,255,255,.8);min-height:1.2em}
+.pill-cta{grid-column:1/-1;min-height:84px;flex-direction:row;gap:14px}
+.cal-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:12px 18px;border-radius:999px;text-decoration:none;text-align:center;
+  font-weight:500;font-size:16px;line-height:1.2;color:var(--ink);background:rgba(255,255,255,.6);border:1px solid rgba(17,21,31,.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer}
+.cal-btn svg{width:22px;height:22px;flex:none}
+.hint-form{font-size:13px;color:var(--ink-2);line-height:1.4;margin:0}
+.baile-info{gap:10px}
+.baile-info .sub{margin:0}
+.facts{margin:6px 0 0;display:flex;flex-direction:column}
+.facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid rgba(17,21,31,.12)}
+.facts dt{font:500 11px/1.2 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2)}
+.facts dd{margin:0;font-size:18px;font-weight:600;letter-spacing:.02em;text-align:right}
+
 /* ---------- formulario ---------- */
 .panel{border-radius:38px;padding:22px 18px 20px;background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.85);box-shadow:0 24px 44px -30px rgba(30,40,60,.4);display:flex;flex-direction:column;gap:18px}
@@ -262,7 +276,7 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
     <div class="moments" role="group" aria-label="Momentos del día">
       <button class="moment" type="button" data-i="0" aria-pressed="false"><b>12:00</b><span>Comer</span></button>
       <button class="moment" type="button" data-i="1" aria-pressed="true"><b>Tarde</b><span>Mates y juegos</span></button>
-      <button class="moment" type="button" data-i="2" aria-pressed="false"><b>Noche</b><span>A ver qué onda</span></button>
+      <button class="moment" type="button" data-i="2" aria-pressed="false"><b>Noche</b><span>Previa y baile</span></button>
     </div>
     <p class="moment-detail" id="momentDetail" aria-live="polite"></p>
     <div class="week" aria-label="Semana del 20 al 26 de septiembre; el cumple es el sábado 26">
@@ -271,7 +285,7 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
     <p class="week-cap" aria-hidden="true">20 – 26 sep</p>
   </section>
 
-  <p class="intro">Desde las 12 hs arrancamos con algo para comer, después pasamos la tarde con mates y juegos de mesa, <em>y a la noche vemos qué onda.</em></p>
+  <p class="intro">Desde las 12 hs arrancamos con algo para comer, después pasamos la tarde con mates y juegos de mesa, <em>y a la noche hacemos la previa: hay baile del Loco Amato en Sacanta.</em></p>
 
   <div class="pills">
     <div class="glass pill pill-pink">
@@ -279,6 +293,14 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
       <span class="lbl">Confirmados</span>
       <span class="dot-num big" id="countNum">–</span>
       <span class="unit">personas</span>
+      <span class="unit2" id="countMaybe">&nbsp;</span>
+    </div>
+    <div class="glass pill pill-baile">
+      <span class="ring"></span>
+      <span class="lbl">Baile · Sacanta</span>
+      <span class="dot-num big" id="baileSi">–</span>
+      <span class="unit">van al baile</span>
+      <span class="unit2" id="baileSub">&nbsp;</span>
     </div>
     <div class="glass pill pill-indigo">
       <span class="ring"></span>
@@ -287,7 +309,7 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
     </div>
     <a class="glass pill pill-orange pill-place" id="placeLink">
       <span class="ring"></span>
-      <span class="lbl">Lugar</span>
+      <span class="lbl">Lugar del cumple</span>
       <span class="val" id="pillPlace">A confirmar</span>
       <span class="place-hint" id="placeHint" hidden>Abrir en Maps ↗</span>
     </a>
@@ -297,11 +319,26 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
     </a>
   </div>
 
+  <section class="panel baile-info" aria-labelledby="baileTitle">
+    <span class="lab">A la noche</span>
+    <h2 id="baileTitle">Baile del Loco Amato</h2>
+    <p class="sub">Hacemos la previa antes de ir.</p>
+    <dl class="facts">
+      <div><dt>Lugar</dt><dd>Sacanta</dd></div>
+      <div><dt>Anticipadas</dt><dd>KIOSCO PEPOS</dd></div>
+    </dl>
+  </section>
+
+  <a class="cal-btn js-cal" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M12 13v4.5M9.75 15.25h4.5"/></svg>
+    <span>Agregar al calendario de Google</span>
+  </a>
+
   <section class="panel" id="confirmar" aria-labelledby="formTitle">
     <div id="formPanel" style="display:contents">
       <div>
         <h2 id="formTitle">¿Venís?</h2>
-        <p class="sub">Avisame si venís, cuántos son y qué querés tomar. Así sé cuánto comprar.</p>
+        <p class="sub">Avisame si venís, cuántos son, qué querés tomar y si vas al baile. Así sé cuánto comprar.</p>
       </div>
       <form id="rsvp" style="display:contents" novalidate>
         <div class="field">
@@ -338,6 +375,15 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
             <input class="input" id="other" type="text" maxlength="120" placeholder="Lo que quieras">
           </div>
         </div>
+        <fieldset class="field">
+          <legend>¿Vas al baile del Loco Amato?</legend>
+          <div class="seg">
+            <label><input type="radio" name="baile" value="si"><span>Voy</span></label>
+            <label><input type="radio" name="baile" value="capaz"><span>Quizás</span></label>
+            <label><input type="radio" name="baile" value="no"><span>No voy</span></label>
+          </div>
+          <p class="hint-form">Es a la noche, en Sacanta. Las anticipadas se compran en KIOSCO PEPOS. Cada respuesta cuenta una persona: la tuya.</p>
+        </fieldset>
         <div class="field">
           <label for="note">Algo que tengamos que saber (opcional)</label>
           <textarea class="input" id="note" maxlength="280" placeholder="Alergias, llego más tarde, etc."></textarea>
@@ -353,6 +399,10 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
         <p class="sub" id="doneSub"></p>
       </div>
       <div class="summary" id="doneSummary"></div>
+      <a class="cal-btn js-cal" id="doneCal" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M12 13v4.5M9.75 15.25h4.5"/></svg>
+        <span>Agregar al calendario de Google</span>
+      </a>
       <button class="cta ghost" type="button" id="editBtn">Cambiar mi respuesta</button>
     </div>
   </section>
@@ -399,6 +449,7 @@ const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
 const mapsHref = ev => safeUrl(ev.maps_url) || (ev.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.address) : '');
 const DRINKS = [['cerveza','Cerveza'],['fernet','Fernet'],['vino','Vino'],['gaseosa','Gaseosa'],['agua','Agua'],['otros','Otros']];
 const STATUS = { si: 'Va', capaz: 'Capaz', no: 'No va' };
+const BAILE = { si: 'Voy', capaz: 'Quizás', no: 'No voy' };
 
 const $ = (s, r = document) => r.querySelector(s);
 const h = (tag, props, ...kids) => {
@@ -433,12 +484,12 @@ const demo = (() => {
   const seed = () => {
     const t = n => new Date(Date.now() - n * 3600e3).toISOString();
     return { event: { ...DEFAULT_EVENT }, rsvps: [
-      { id: 'd1', name: 'Lucía', status: 'si', party: 2, drinks: ['cerveza', 'agua'], beer_brand: 'Patagonia', other_drink: '', note: '', updated_at: t(30) },
-      { id: 'd2', name: 'Martín', status: 'si', party: 1, drinks: ['fernet', 'gaseosa'], beer_brand: '', other_drink: '', note: '', updated_at: t(26) },
-      { id: 'd3', name: 'Cami', status: 'si', party: 1, drinks: ['vino'], beer_brand: '', other_drink: '', note: 'Soy alérgica al maní', updated_at: t(20) },
-      { id: 'd4', name: 'Nico', status: 'capaz', party: 2, drinks: ['cerveza', 'otros'], beer_brand: 'Quilmes', other_drink: 'Gin tonic', note: '', updated_at: t(9) },
-      { id: 'd5', name: 'Sofi', status: 'si', party: 3, drinks: ['gaseosa', 'agua', 'cerveza'], beer_brand: 'Quilmes', other_drink: '', note: '', updated_at: t(5) },
-      { id: 'd6', name: 'Fede', status: 'no', party: 1, drinks: [], beer_brand: '', other_drink: '', note: 'Viajo ese finde', updated_at: t(3) }
+      { id: 'd1', name: 'Lucía', status: 'si', party: 2, drinks: ['cerveza', 'agua'], beer_brand: 'Patagonia', other_drink: '', baile: 'si', note: '', updated_at: t(30) },
+      { id: 'd2', name: 'Martín', status: 'si', party: 1, drinks: ['fernet', 'gaseosa'], beer_brand: '', other_drink: '', baile: 'si', note: '', updated_at: t(26) },
+      { id: 'd3', name: 'Cami', status: 'si', party: 1, drinks: ['vino'], beer_brand: '', other_drink: '', baile: 'capaz', note: 'Soy alérgica al maní', updated_at: t(20) },
+      { id: 'd4', name: 'Nico', status: 'capaz', party: 2, drinks: ['cerveza', 'otros'], beer_brand: 'Quilmes', other_drink: 'Gin tonic', baile: 'si', note: '', updated_at: t(9) },
+      { id: 'd5', name: 'Sofi', status: 'si', party: 3, drinks: ['gaseosa', 'agua', 'cerveza'], beer_brand: 'Quilmes', other_drink: '', baile: 'no', note: '', updated_at: t(5) },
+      { id: 'd6', name: 'Fede', status: 'no', party: 1, drinks: [], beer_brand: '', other_drink: '', baile: 'no', note: 'Viajo ese finde', updated_at: t(3) }
     ] };
   };
   const load = () => {
@@ -450,7 +501,10 @@ const demo = (() => {
   const guard = pin => { if (pin !== DEMO_PIN) throw new Error('pin'); };
   return {
     async getEvent() { return { ...load().event }; },
-    async publicCount() { const r = load().rsvps; return { personas: r.filter(x => x.status === 'si').reduce((a, x) => a + x.party, 0), respuestas: r.length }; },
+    async publicCount() {
+      const r = load().rsvps, p = s => r.filter(x => x.status === s).reduce((a, x) => a + x.party, 0), b = s => r.filter(x => x.baile === s).length;
+      return { personas: p('si'), personas_capaz: p('capaz'), respuestas: r.length, baile_si: b('si'), baile_capaz: b('capaz'), baile_no: b('no') };
+    },
     async submit(rec) {
       const d = load(), row = { ...rec, updated_at: new Date().toISOString() }, i = d.rsvps.findIndex(x => x.id === rec.id);
       if (i >= 0) d.rsvps[i] = row; else d.rsvps.push(row);
@@ -475,7 +529,7 @@ const remote = (() => {
   return {
     async getEvent() { const r = await call('get_event'); return { menu: (r && r.menu) || DEFAULT_EVENT.menu, address: (r && r.address) || '', maps_url: (r && r.maps_url) || '' }; },
     publicCount: () => call('public_count'),
-    submit: rec => call('submit_rsvp', { p_id: rec.id, p_name: rec.name, p_status: rec.status, p_party: rec.party, p_drinks: rec.drinks, p_beer_brand: rec.beer_brand, p_other_drink: rec.other_drink, p_note: rec.note }),
+    submit: rec => call('submit_rsvp', { p_id: rec.id, p_name: rec.name, p_status: rec.status, p_party: rec.party, p_drinks: rec.drinks, p_beer_brand: rec.beer_brand, p_other_drink: rec.other_drink, p_baile: rec.baile, p_note: rec.note }),
     adminList: pin => call('admin_list', { p_pin: pin }),
     setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url })
   };
@@ -490,8 +544,21 @@ let event = { ...DEFAULT_EVENT };
 const MOMENTS = [
   () => `Arrancamos al mediodía: ${event.menu.toLowerCase()}.`,
   () => 'Mates y juegos de mesa para pasar la tarde.',
-  () => 'A la noche vemos qué onda.'
+  () => 'A la noche hacemos la previa: hay baile del Loco Amato en Sacanta.'
 ];
+
+// Google Calendar: solo se abre si el invitado toca el botón
+const calHref = () => {
+  const p = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: 'Cumple Jere',
+    dates: '20260926T120000/20260926T200000',
+    ctz: 'America/Argentina/Cordoba',
+    details: 'Cumple de Jere. Desde las 12 hs: comida, mates y juegos de mesa. A la noche, previa y baile del Loco Amato en Sacanta.\n' + location.href.split('#')[0]
+  });
+  if (event.address) p.set('location', event.address);
+  return 'https://calendar.google.com/calendar/render?' + p.toString();
+};
 
 // curva + perilla
 const curve = $('#curve'), knob = $('#knob'), vline = $('#vline'), marks = $('#marks');
@@ -540,11 +607,18 @@ function renderEvent() {
   } else { link.removeAttribute('href'); link.removeAttribute('target'); link.removeAttribute('aria-label'); }
   $('#placeHint').hidden = !href;
   $('#momentDetail').textContent = MOMENTS[sel]();
+  document.querySelectorAll('.js-cal').forEach(a => { a.href = calHref(); });
 }
 async function loadPublic() {
   try { event = await api.getEvent(); } catch {}
   renderEvent();
-  try { const c = await api.publicCount(); $('#countNum').textContent = String(c.personas); } catch { $('#countNum').textContent = '–'; }
+  try {
+    const c = await api.publicCount(), n = v => (v == null ? '–' : String(v));
+    $('#countNum').textContent = n(c.personas);
+    $('#countMaybe').textContent = c.personas_capaz > 0 ? `+${c.personas_capaz} capaz` : ' ';
+    $('#baileSi').textContent = n(c.baile_si);
+    $('#baileSub').textContent = c.baile_capaz == null ? ' ' : `${c.baile_capaz} quizás · ${c.baile_no} no`;
+  } catch { $('#countNum').textContent = '–'; $('#baileSi').textContent = '–'; }
 }
 
 // formulario
@@ -573,6 +647,7 @@ function fillForm(r) {
   $('#name').value = r.name || '';
   const s = form.querySelector(`input[name=status][value="${r.status}"]`); if (s) s.checked = true;
   setParty(r.party || 1);
+  const bl = form.querySelector(`input[name=baile][value="${r.baile}"]`); if (bl) bl.checked = true;
   form.querySelectorAll('input[name=drink]').forEach(i => { i.checked = (r.drinks || []).includes(i.value); });
   $('#beer').value = r.beer_brand || ''; $('#other').value = r.other_drink || ''; $('#note').value = r.note || '';
   syncFields();
@@ -590,7 +665,9 @@ function showDone(r) {
     const dr = (r.drinks || []).map(k => k === 'cerveza' && r.beer_brand ? `Cerveza (${r.beer_brand})` : k === 'otros' && r.other_drink ? `Otros (${r.other_drink})` : label(k));
     if (dr.length) lines.push(h('span', {}, 'Para tomar: ', h('b', { text: dr.join(', ') })));
   }
+  if (r.baile) lines.push(h('span', {}, 'Baile del Loco Amato: ', h('b', { text: BAILE[r.baile] || r.baile })));
   $('#doneSummary').replaceChildren(...lines);
+  $('#doneCal').hidden = r.status === 'no';
 }
 $('#editBtn').addEventListener('click', () => {
   const r = loadMine(); if (r) fillForm(r);
@@ -601,13 +678,14 @@ $('#editBtn').addEventListener('click', () => {
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const err = $('#formErr'); err.textContent = '';
-  const name = $('#name').value.trim(), st = status(), dr = drinksOn();
+  const name = $('#name').value.trim(), st = status(), dr = drinksOn(), bl = form.elements['baile'].value;
   if (!name) { err.textContent = 'Poné tu nombre para que sepa quién sos.'; $('#name').focus(); return; }
   if (!st) { err.textContent = 'Elegí si venís, capaz o no podés.'; return; }
   if (st !== 'no' && !dr.length) { err.textContent = 'Elegí al menos una bebida (o “Otros” si querés otra cosa).'; return; }
+  if (!bl) { err.textContent = 'Contame si vas al baile del Loco Amato: Voy, Quizás o No voy.'; return; }
   const prev = loadMine();
   const rec = {
-    id: prev && prev.id ? prev.id : uuid(), name, status: st,
+    id: prev && prev.id ? prev.id : uuid(), name, status: st, baile: bl,
     party: st === 'no' ? 1 : party, drinks: st === 'no' ? [] : dr,
     beer_brand: st !== 'no' && dr.includes('cerveza') ? $('#beer').value.trim() : '',
     other_drink: st !== 'no' && dr.includes('otros') ? $('#other').value.trim() : '',
@@ -696,13 +774,27 @@ function renderAdmin(rows) {
     h('div', {}, h('h3', { text: 'Bebidas' }), h('p', { class: 'cap', text: 'Cuántas respuestas de “voy” o “capaz” eligieron cada una.' })),
     h('div', { class: 'bars' }, bars));
 
+  // baile
+  const bNames = k => rows.filter(r => r.baile === k).map(r => r.name).sort((a, b) => a.localeCompare(b, 'es'));
+  const bMax = Math.max(1, ...['si', 'capaz', 'no'].map(k => bNames(k).length));
+  const baile = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Baile del Loco Amato' }), h('p', { class: 'cap', text: 'A la noche, en Sacanta. Cada respuesta cuenta una persona.' })),
+    h('div', { class: 'bars' }, ['si', 'capaz', 'no'].map(k => {
+      const names = bNames(k);
+      const row = h('div', { class: 'bar-row' },
+        h('div', { class: 'bar-head' }, h('span', { text: BAILE[k] }), h('span', { class: 'n', text: String(names.length) })),
+        h('div', { class: 'track' }, Object.assign(h('div', { class: 'fill' }), { style: `width:${names.length / bMax * 100}%` })));
+      if (names.length) row.append(h('p', { class: 'sub-list', text: names.join(' · ') }));
+      return row;
+    })));
+
   // lista
   const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name, 'es'));
   const list = h('section', { class: 'panel' },
     h('h3', { text: `Respuestas (${rows.length})` }),
     h('div', { class: 'guests' }, sorted.length ? sorted.map(r => {
       const dr = (r.drinks || []).map(k => k === 'cerveza' && r.beer_brand ? `Cerveza (${r.beer_brand})` : k === 'otros' && r.other_drink ? `Otros (${r.other_drink})` : label(k)).join(', ');
-      const meta = [r.status !== 'no' ? `${r.party} ${r.party === 1 ? 'persona' : 'personas'}` : '', dr, r.note ? `“${r.note}”` : ''].filter(Boolean).join(' · ');
+      const meta = [r.status !== 'no' ? `${r.party} ${r.party === 1 ? 'persona' : 'personas'}` : '', dr, r.baile ? `Baile: ${BAILE[r.baile] || r.baile}` : '', r.note ? `“${r.note}”` : ''].filter(Boolean).join(' · ');
       return h('div', { class: 'guest' }, h('span', { class: 'nm', text: r.name }), h('span', { class: 'tag tag-' + r.status, text: STATUS[r.status] || r.status }), meta ? h('span', { class: 'meta', text: meta }) : null);
     }) : h('p', { class: 'cap', text: 'Todavía no respondió nadie.' })));
 
@@ -728,7 +820,7 @@ function renderAdmin(rows) {
 
   // compartir
   const url = () => location.href.split('#')[0];
-  const msg = () => `Hago mi cumple el sábado 26 desde las 12 hs 🎂 Comemos algo, tomamos unos mates, jugamos juegos de mesa y a la noche vemos qué onda. Confirmame si venís y qué querés tomar acá: ${url()}`;
+  const msg = () => `Hago mi cumple el sábado 26 desde las 12 hs 🎂 Comemos algo, tomamos unos mates, jugamos juegos de mesa y a la noche hacemos la previa, porque hay baile del Loco Amato en Sacanta. Confirmame si venís, qué querés tomar y si vas al baile acá: ${url()}`;
   const share = h('section', { class: 'panel' },
     h('div', {}, h('h3', { text: 'Mandar la invitación' }), h('p', { class: 'cap', text: 'Un solo link para todos.' })),
     h('div', { class: 'row2' },
@@ -738,7 +830,7 @@ function renderAdmin(rows) {
       } })));
 
   const refresh = h('button', { class: 'cta ghost', type: 'button', text: 'Actualizar respuestas', onclick: () => enterAdmin(PIN) });
-  body.replaceChildren(hero, food, drinks, list, evt, share, refresh);
+  body.replaceChildren(hero, food, drinks, baile, list, evt, share, refresh);
 }
 
 async function enterAdmin(pin) {
