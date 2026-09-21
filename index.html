@@ -163,6 +163,15 @@ a.pill-place[href]{cursor:pointer}
 .pay-mp{color:#fff;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
 .pay-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.4;color:rgba(255,255,255,.92)}
 .pay-steps b{font-weight:600}
+.buy{display:flex;flex-direction:column}
+.buy-row{display:grid;grid-template-columns:1.5fr .75fr .95fr;gap:0 10px;align-items:center;padding:12px 0;border-top:1px solid rgba(17,21,31,.1)}
+.buy-row.buy-h{border-top:0;padding:0 0 8px;font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.buy-row.buy-h span+span,.buy-row>.dot-num{text-align:center}
+.buy-item{display:flex;flex-direction:column;gap:3px;min-width:0}
+.buy-item b{font-size:16px;font-weight:600}
+.buy-item small{font-size:12px;line-height:1.3;color:var(--ink-2)}
+.buy-row>.dot-num{font-size:30px;color:var(--ink)}
+.buy-eye{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid rgba(17,21,31,.1)}
 .who-group{display:flex;flex-direction:column;gap:10px}
 .who-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .who-head .n{font:500 13px/1 var(--mono);color:var(--ink-2)}
@@ -804,6 +813,37 @@ function renderAdmin(rows) {
         ? h('ul', { class: 'who-list' }, [...arr].sort(byName).map(r => h('li', {}, r.name, k !== 'no' && r.party > 1 ? h('small', { text: ` +${r.party - 1}` }) : null)))
         : h('p', { class: 'cap', text: 'Nadie todavía.' }))));
 
+  // cuánto comprar (reglas de Jere; se redondea hacia arriba por botella)
+  const seguros = rows.filter(r => r.status === 'si'), conCapaz = rows.filter(r => r.status !== 'no');
+  const votos = (subset, k) => subset.filter(r => (r.drinks || []).includes(k)).length;
+  const comprar = subset => {
+    const fernet = Math.ceil(votos(subset, 'fernet') / 3);
+    return { vino: Math.ceil(votos(subset, 'vino') / 2), cerveza: 2 * votos(subset, 'cerveza'), fernet, coca: fernet, saborizada: votos(subset, 'gaseosa') };
+  };
+  const cS = comprar(seguros), cC = comprar(conCapaz);
+  const BUY = [
+    ['Vino', '1 botella cada 2 votos', 'vino'],
+    ['Cerveza', '2 por voto', 'cerveza'],
+    ['Fernet', '1 botella cada 3 votos', 'fernet'],
+    ['Coca', '1 por cada fernet', 'coca'],
+    ['Agua saborizada', '1 por cada voto de gaseosa', 'saborizada']
+  ];
+  const aOjo = [
+    votos(conCapaz, 'agua') ? `Agua: ${votos(conCapaz, 'agua')} ${votos(conCapaz, 'agua') === 1 ? 'voto' : 'votos'}` : '',
+    others.length ? `Otros: ${others.join(', ')}` : ''
+  ].filter(Boolean);
+  const buy = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Cuánto comprar' }),
+      h('p', { class: 'cap', text: '“Seguro” cuenta a los que dijeron Voy; “Con capaz” suma a los capaz. Cada voto es una persona. Redondeado hacia arriba.' })),
+    h('div', { class: 'buy' },
+      h('div', { class: 'buy-row buy-h' }, h('span', {}), h('span', { text: 'Seguro' }), h('span', { text: 'Con capaz' })),
+      BUY.map(([name, rule, k]) => h('div', { class: 'buy-row' },
+        h('div', { class: 'buy-item' }, h('b', { text: name }), h('small', { text: rule })),
+        h('span', { class: 'dot-num', text: String(cS[k]) }),
+        h('span', { class: 'dot-num', text: String(cC[k]) })))),
+    h('div', { class: 'buy-eye' }, h('span', { class: 'lab', text: 'A ojo' }),
+      h('p', { class: 'cap', text: aOjo.length ? aOjo.join(' · ') : 'Nadie eligió agua ni otros todavía.' })));
+
   // bebidas
   const max = Math.max(1, ...Object.values(counts));
   const bars = DRINKS.map(([k, l]) => {
@@ -881,7 +921,7 @@ function renderAdmin(rows) {
       } })));
 
   const refresh = h('button', { class: 'cta ghost', type: 'button', text: 'Actualizar respuestas', onclick: () => enterAdmin(PIN) });
-  body.replaceChildren(hero, who, drinks, baile, list, evt, share, refresh);
+  body.replaceChildren(hero, who, buy, drinks, baile, list, evt, share, refresh);
 }
 
 async function enterAdmin(pin) {
