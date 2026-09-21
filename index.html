@@ -163,6 +163,12 @@ a.pill-place[href]{cursor:pointer}
 .pay-mp{color:#fff;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
 .pay-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.4;color:rgba(255,255,255,.92)}
 .pay-steps b{font-weight:600}
+.who-group{display:flex;flex-direction:column;gap:10px}
+.who-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.who-head .n{font:500 13px/1 var(--mono);color:var(--ink-2)}
+.who-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.who-list li{padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.75);border:1px solid rgba(17,21,31,.1);font-size:15px;font-weight:500}
+.who-list small{color:var(--ink-2);font-weight:600}
 .check{display:flex;align-items:flex-start;gap:12px;font:400 15px/1.4 var(--font)!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;padding-top:6px;cursor:pointer}
 .check input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--ink)}
 a.pill-baile{text-decoration:none;color:#fff;cursor:pointer}
@@ -221,12 +227,6 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
 .admin-hero .big-count span{padding-bottom:16px;font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.8)}
 .panel h3{font-size:19px;font-weight:500;letter-spacing:-.01em}
 .panel .cap{font-size:13px;color:var(--ink-2);line-height:1.4}
-.food{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.food>div{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:24px;background:rgba(255,255,255,.65)}
-.food .dot-num{font-size:34px;color:var(--ink)}
-.food small{font:400 12px/1.3 var(--mono);color:var(--ink-2)}
-.grams{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.grams .input{padding:11px 14px;border-radius:16px}
 .bars{display:flex;flex-direction:column;gap:14px}
 .bar-row{display:flex;flex-direction:column;gap:6px}
 .bar-head{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;font-weight:500}
@@ -248,7 +248,7 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
   background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-size:15px;transition:opacity .25s,transform .25s;z-index:10;max-width:calc(100vw - 32px)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media (max-width:360px){.date-row .dot-num{font-size:88px}.pill .big{font-size:38px}.row2,.food{grid-template-columns:1fr}}
+@media (max-width:360px){.date-row .dot-num{font-size:88px}.pill .big{font-size:38px}.row2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -519,7 +519,6 @@ const local = mk(() => localStorage), sess = mk(() => sessionStorage);
 const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); }));
 const label = k => (DRINKS.find(d => d[0] === k) || [k, k])[1];
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
-const fmt1 = n => (Math.round(n * 10) / 10).toString().replace('.', ',');
 let toastT;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2400); };
 
@@ -793,26 +792,17 @@ function renderAdmin(rows) {
   );
   hero.querySelector('.big-count span').style.whiteSpace = 'pre-line';
 
-  // comida
-  const inPollo = h('input', { class: 'input', id: 'gPollo', type: 'number', inputmode: 'numeric', min: '0', step: '10', value: '350' });
-  const inPapas = h('input', { class: 'input', id: 'gPapas', type: 'number', inputmode: 'numeric', min: '0', step: '10', value: '250' });
-  const out = {};
-  const box = (title, key) => h('div', {}, h('span', { class: 'lab', text: title }),
-    (out[key + 'P'] = h('div', { class: 'dot-num' })), h('small', { text: 'pollo' }),
-    (out[key + 'F'] = h('div', { class: 'dot-num' })), h('small', { text: 'papas' }));
-  const foodBoxes = h('div', { class: 'food' }, box(`Seguro · ${pSi}`, 's'), box(`Con capaz · ${pSi + pCp}`, 'c'));
-  const calc = () => {
-    const g1 = Math.max(0, +inPollo.value || 0), g2 = Math.max(0, +inPapas.value || 0);
-    out.sP.textContent = fmt1(pSi * g1 / 1000) + ' kg'; out.sF.textContent = fmt1(pSi * g2 / 1000) + ' kg';
-    out.cP.textContent = fmt1((pSi + pCp) * g1 / 1000) + ' kg'; out.cF.textContent = fmt1((pSi + pCp) * g2 / 1000) + ' kg';
-  };
-  inPollo.addEventListener('input', calc); inPapas.addEventListener('input', calc); calc();
-  const food = h('section', { class: 'panel' },
-    h('div', {}, h('h3', { text: 'Comida' }), h('p', { class: 'cap', text: `Menú actual: ${event.menu}. Ajustá los gramos por persona.` })),
-    h('div', { class: 'grams' },
-      h('div', { class: 'field' }, h('label', { for: 'gPollo', text: 'Pollo g/persona' }), inPollo),
-      h('div', { class: 'field' }, h('label', { for: 'gPapas', text: 'Papas g/persona' }), inPapas)),
-    foodBoxes);
+  // quiénes votaron, agrupados por respuesta
+  const byName = (a, b) => a.name.localeCompare(b.name, 'es');
+  const who = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Quiénes respondieron' }), h('p', { class: 'cap', text: 'El “+N” son los acompañantes que sumó cada uno.' })),
+    [['si', 'Van', si], ['capaz', 'Capaz', cp], ['no', 'No van', no]].map(([k, l, arr]) => h('div', { class: 'who-group' },
+      h('div', { class: 'who-head' },
+        h('span', { class: 'tag tag-' + k, text: l }),
+        h('span', { class: 'n', text: k === 'no' ? String(arr.length) : `${arr.length} resp. · ${sum(arr)} pers.` })),
+      arr.length
+        ? h('ul', { class: 'who-list' }, [...arr].sort(byName).map(r => h('li', {}, r.name, k !== 'no' && r.party > 1 ? h('small', { text: ` +${r.party - 1}` }) : null)))
+        : h('p', { class: 'cap', text: 'Nadie todavía.' }))));
 
   // bebidas
   const max = Math.max(1, ...Object.values(counts));
@@ -891,7 +881,7 @@ function renderAdmin(rows) {
       } })));
 
   const refresh = h('button', { class: 'cta ghost', type: 'button', text: 'Actualizar respuestas', onclick: () => enterAdmin(PIN) });
-  body.replaceChildren(hero, food, drinks, baile, list, evt, share, refresh);
+  body.replaceChildren(hero, who, drinks, baile, list, evt, share, refresh);
 }
 
 async function enterAdmin(pin) {
