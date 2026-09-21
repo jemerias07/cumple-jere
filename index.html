@@ -142,6 +142,29 @@ a.pill-place[href]{cursor:pointer}
   font-weight:500;font-size:16px;line-height:1.2;color:var(--ink);background:rgba(255,255,255,.6);border:1px solid rgba(17,21,31,.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer}
 .cal-btn svg{width:22px;height:22px;flex:none}
 .hint-form{font-size:13px;color:var(--ink-2);line-height:1.4;margin:0}
+.notice{border-radius:32px;padding:20px 20px 22px;display:flex;flex-direction:column;gap:12px;color:var(--ink);
+  background:linear-gradient(135deg,#fff1e2 0%,#ffdcec 100%);border:2px solid #ff9a6b;box-shadow:0 22px 38px -26px rgba(255,110,120,.8)}
+.notice .badge{align-self:flex-start;background:var(--ink);color:#fff;font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:8px 13px;border-radius:999px}
+.notice p{font-size:17px;line-height:1.45;margin:0;text-wrap:pretty}
+.notice b{font-weight:700}
+.pay{border-radius:38px;padding:24px 22px;display:flex;flex-direction:column;gap:16px;
+  background:radial-gradient(90% 70% at 10% 0%,#3d3fa0 0%,transparent 65%),radial-gradient(80% 60% at 100% 100%,rgba(255,98,212,.55),transparent 65%),linear-gradient(180deg,#1f2160 0%,#0d1030 100%);
+  box-shadow:0 30px 50px -30px rgba(20,20,80,.7)}
+.pay-eyebrow{font:500 11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85)}
+.pay-amt{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.pay-amt .dot-num{font-size:56px}
+.pay-amt .unit{padding-bottom:8px;font:400 12px/1 var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.85)}
+.pay-alias{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 16px;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25)}
+.pay-alias span{font:500 11px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.pay-alias b{font:600 20px/1.2 var(--mono);letter-spacing:.02em;word-break:break-all;text-align:right}
+.pay-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pay-copy,.pay-mp{display:flex;align-items:center;justify-content:center;text-align:center;min-height:54px;padding:10px 12px;border-radius:999px;font-size:15px;font-weight:600;line-height:1.2;cursor:pointer;text-decoration:none}
+.pay-copy{border:0;background:#fff;color:var(--ink)}
+.pay-mp{color:#fff;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
+.pay-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.4;color:rgba(255,255,255,.92)}
+.pay-steps b{font-weight:600}
+.check{display:flex;align-items:flex-start;gap:12px;font:400 15px/1.4 var(--font)!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;padding-top:6px;cursor:pointer}
+.check input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--ink)}
 a.pill-baile{text-decoration:none;color:#fff;cursor:pointer}
 .baile-info{gap:10px;scroll-margin-top:16px}
 .baile-info .sub{margin:0}
@@ -321,6 +344,25 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
     </a>
   </div>
 
+  <aside class="notice" aria-labelledby="noticeTitle">
+    <span class="badge" id="noticeTitle">Importante · sobre los gastos</span>
+    <p>Voy a tratar de que todo salga <b>lo más barato posible</b> y me hago cargo de una parte de los gastos. Pero, como todos los años, va a haber un <b>valor de tarjeta a pagar</b>.</p>  </aside>
+
+  <section class="glass pay" id="pago" aria-labelledby="payTitle" hidden>
+    <span class="pay-eyebrow" id="payTitle">Valor de la tarjeta</span>
+    <div class="pay-amt"><span class="dot-num" id="payAmount">$0</span><span class="unit">por persona</span></div>
+    <div class="pay-alias"><span>Alias</span><b id="payAlias">jere.conrero</b></div>
+    <div class="pay-actions">
+      <button class="pay-copy" type="button" id="copyAlias">Copiar alias</button>
+      <a class="pay-mp" href="https://www.mercadopago.com.ar/" target="_blank" rel="noopener noreferrer">Abrir Mercado Pago</a>
+    </div>
+    <ol class="pay-steps">
+      <li>Abrí Mercado Pago o tu banco.</li>
+      <li>Elegí <b>Transferir</b> y después <b>con alias, CBU o CVU</b>.</li>
+      <li>Pegá el alias, poné el monto y listo.</li>
+    </ol>
+  </section>
+
   <section class="panel" id="confirmar" aria-labelledby="formTitle">
     <div id="formPanel" style="display:contents">
       <div>
@@ -446,7 +488,9 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
    Para usarla de verdad: completar url y clave publicable de Supabase. */
 const CFG = { supabaseUrl: 'https://duzjqpewgnccdcgxmwpr.supabase.co', supabaseKey: 'sb_publishable_3j_lvKz3cbk4ZX5DraiaXg_A6EXl5mw' };
 const DEMO_PIN = '1234';
-const DEFAULT_EVENT = { menu: 'Pollo frito con papas fritas', address: '', maps_url: '' };
+const DEFAULT_EVENT = { menu: 'Pollo frito con papas fritas', address: '', maps_url: '', pay_enabled: false, pay_amount: 0 };
+const PAY_ALIAS = 'jere.conrero';
+const money = n => '$' + Number(n || 0).toLocaleString('es-AR');
 const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
 const mapsHref = ev => safeUrl(ev.maps_url) || (ev.address ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(ev.address) : '');
 const DRINKS = [['cerveza','Cerveza'],['fernet','Fernet'],['vino','Vino'],['gaseosa','Gaseosa'],['agua','Agua'],['otros','Otros']];
@@ -529,11 +573,11 @@ const remote = (() => {
     return r.status === 204 ? null : r.json();
   };
   return {
-    async getEvent() { const r = await call('get_event'); return { menu: (r && r.menu) || DEFAULT_EVENT.menu, address: (r && r.address) || '', maps_url: (r && r.maps_url) || '' }; },
+    async getEvent() { const r = await call('get_event'); return { menu: (r && r.menu) || DEFAULT_EVENT.menu, address: (r && r.address) || '', maps_url: (r && r.maps_url) || '', pay_enabled: !!(r && r.pay_enabled), pay_amount: (r && +r.pay_amount) || 0 }; },
     publicCount: () => call('public_count'),
     submit: rec => call('submit_rsvp', { p_id: rec.id, p_name: rec.name, p_status: rec.status, p_party: rec.party, p_drinks: rec.drinks, p_beer_brand: rec.beer_brand, p_other_drink: rec.other_drink, p_baile: rec.baile, p_note: rec.note }),
     adminList: pin => call('admin_list', { p_pin: pin }),
-    setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url })
+    setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url, p_pay_enabled: !!ev.pay_enabled, p_pay_amount: ev.pay_amount | 0 })
   };
 })();
 
@@ -610,7 +654,14 @@ function renderEvent() {
   $('#placeHint').hidden = !href;
   $('#momentDetail').textContent = MOMENTS[sel]();
   document.querySelectorAll('.js-cal').forEach(a => { a.href = calHref(); });
+  const payOn = !!event.pay_enabled && event.pay_amount > 0;
+  $('#pago').hidden = !payOn;
+  if (payOn) { $('#payAmount').textContent = money(event.pay_amount); $('#payAlias').textContent = PAY_ALIAS; }
 }
+$('#copyAlias').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(PAY_ALIAS); toast('Alias copiado: ' + PAY_ALIAS); }
+  catch { toast('Alias: ' + PAY_ALIAS); }
+});
 async function loadPublic() {
   try { event = await api.getEvent(); } catch {}
   renderEvent();
@@ -806,11 +857,15 @@ function renderAdmin(rows) {
   const inAddr = h('input', { class: 'input', id: 'evAddr', type: 'text', maxlength: '160', value: event.address, placeholder: 'Calle, número, piso/depto' });
   const inMaps = h('input', { class: 'input', id: 'evMaps', type: 'url', inputmode: 'url', maxlength: '400', value: event.maps_url || '', placeholder: 'https://maps.app.goo.gl/…' });
   const inMenu = h('input', { class: 'input', id: 'evMenu', type: 'text', maxlength: '120', value: event.menu });
+  const inPayOn = h('input', { id: 'evPayOn', type: 'checkbox', checked: !!event.pay_enabled });
+  const inPayAmt = h('input', { class: 'input', id: 'evPayAmt', type: 'number', inputmode: 'numeric', min: '0', step: '500', value: event.pay_amount ? String(event.pay_amount) : '', placeholder: 'Ej: 15000' });
   const saveBtn = h('button', { class: 'cta', type: 'button', text: 'Guardar cambios', onclick: async () => {
     const maps = inMaps.value.trim();
     if (maps && !safeUrl(maps)) { toast('El link de Maps tiene que empezar con https://'); return; }
+    const amt = Math.max(0, Math.round(+inPayAmt.value || 0));
+    if (inPayOn.checked && !amt) { toast('Poné el monto para mostrar la sección de pago'); return; }
     saveBtn.disabled = true;
-    try { await api.setEvent(PIN, { menu: inMenu.value.trim() || DEFAULT_EVENT.menu, address: inAddr.value.trim(), maps_url: maps }); event = await api.getEvent(); renderEvent(); toast('Guardado'); }
+    try { await api.setEvent(PIN, { menu: inMenu.value.trim() || DEFAULT_EVENT.menu, address: inAddr.value.trim(), maps_url: maps, pay_enabled: inPayOn.checked, pay_amount: amt }); event = await api.getEvent(); renderEvent(); toast('Guardado'); }
     catch { toast('No se pudo guardar. Probá de nuevo.'); }
     finally { saveBtn.disabled = false; }
   } });
@@ -820,6 +875,8 @@ function renderAdmin(rows) {
     h('div', { class: 'field' }, h('label', { for: 'evMaps', text: 'Link de Google Maps (opcional)' }), inMaps,
       h('p', { class: 'cap', text: 'Si no ponés link, Maps se abre buscando la dirección.' })),
     h('div', { class: 'field' }, h('label', { for: 'evMenu', text: 'Menú' }), inMenu),
+    h('div', { class: 'field' }, h('label', { for: 'evPayAmt', text: 'Valor de la tarjeta por persona ($)' }), inPayAmt,
+      h('label', { class: 'check', for: 'evPayOn' }, inPayOn, h('span', { text: `Mostrar la sección de pago a los invitados (alias ${PAY_ALIAS})` }))),
     saveBtn);
 
   // compartir
