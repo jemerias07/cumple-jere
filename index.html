@@ -142,7 +142,8 @@ a.pill-place[href]{cursor:pointer}
   font-weight:500;font-size:16px;line-height:1.2;color:var(--ink);background:rgba(255,255,255,.6);border:1px solid rgba(17,21,31,.14);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer}
 .cal-btn svg{width:22px;height:22px;flex:none}
 .hint-form{font-size:13px;color:var(--ink-2);line-height:1.4;margin:0}
-.baile-info{gap:10px}
+a.pill-baile{text-decoration:none;color:#fff;cursor:pointer}
+.baile-info{gap:10px;scroll-margin-top:16px}
 .baile-info .sub{margin:0}
 .facts{margin:6px 0 0;display:flex;flex-direction:column}
 .facts>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-top:1px solid rgba(17,21,31,.12)}
@@ -295,13 +296,14 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
       <span class="unit">personas</span>
       <span class="unit2" id="countMaybe">&nbsp;</span>
     </div>
-    <div class="glass pill pill-baile">
+    <a class="glass pill pill-baile" href="#baile" aria-label="Baile del Loco Amato: ver info">
       <span class="ring"></span>
       <span class="lbl">Baile · Sacanta</span>
       <span class="dot-num big" id="baileSi">–</span>
       <span class="unit">van al baile</span>
       <span class="unit2" id="baileSub">&nbsp;</span>
-    </div>
+      <span class="place-hint">Ver info ↓</span>
+    </a>
     <div class="glass pill pill-indigo">
       <span class="ring"></span>
       <span class="lbl">Menú</span>
@@ -318,21 +320,6 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
       <span class="lbl">Confirmar</span>
     </a>
   </div>
-
-  <section class="panel baile-info" aria-labelledby="baileTitle">
-    <span class="lab">A la noche</span>
-    <h2 id="baileTitle">Baile del Loco Amato</h2>
-    <p class="sub">Hacemos la previa antes de ir.</p>
-    <dl class="facts">
-      <div><dt>Lugar</dt><dd>Sacanta</dd></div>
-      <div><dt>Anticipadas</dt><dd>KIOSCO PEPOS</dd></div>
-    </dl>
-  </section>
-
-  <a class="cal-btn js-cal" target="_blank" rel="noopener noreferrer">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M12 13v4.5M9.75 15.25h4.5"/></svg>
-    <span>Agregar al calendario de Google</span>
-  </a>
 
   <section class="panel" id="confirmar" aria-labelledby="formTitle">
     <div id="formPanel" style="display:contents">
@@ -405,6 +392,21 @@ textarea.input{border-radius:24px;resize:vertical;min-height:84px;line-height:1.
       </a>
       <button class="cta ghost" type="button" id="editBtn">Cambiar mi respuesta</button>
     </div>
+  </section>
+
+  <a class="cal-btn js-cal" id="calMain" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M12 13v4.5M9.75 15.25h4.5"/></svg>
+    <span>Agregar al calendario de Google</span>
+  </a>
+
+  <section class="panel baile-info" id="baile" aria-labelledby="baileTitle">
+    <span class="lab">A la noche</span>
+    <h2 id="baileTitle">Baile del Loco Amato</h2>
+    <p class="sub">Hacemos la previa antes de ir.</p>
+    <dl class="facts">
+      <div><dt>Lugar</dt><dd>Sacanta</dd></div>
+      <div><dt>Anticipadas</dt><dd>KIOSCO PEPOS</dd></div>
+    </dl>
   </section>
 
   <div class="foot"><span>Sábado 26 · 12:00 hs</span><a href="#admin">Anfitrión</a></div>
@@ -668,10 +670,12 @@ function showDone(r) {
   if (r.baile) lines.push(h('span', {}, 'Baile del Loco Amato: ', h('b', { text: BAILE[r.baile] || r.baile })));
   $('#doneSummary').replaceChildren(...lines);
   $('#doneCal').hidden = r.status === 'no';
+  $('#calMain').hidden = true; // ya respondió: el botón vive dentro de su confirmación
 }
 $('#editBtn').addEventListener('click', () => {
   const r = loadMine(); if (r) fillForm(r);
   $('#donePanel').hidden = true; $('#donePanel').style.display = 'none';
+  $('#calMain').hidden = false;
   $('#formPanel').hidden = false; $('#formPanel').style.display = 'contents';
   $('#name').focus();
 });
