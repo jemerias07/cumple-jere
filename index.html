@@ -172,6 +172,17 @@ a.pill-place[href]{cursor:pointer}
 .buy-item small{font-size:12px;line-height:1.3;color:var(--ink-2)}
 .buy-row>.dot-num{font-size:30px;color:var(--ink)}
 .buy-eye{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid rgba(17,21,31,.1)}
+.rem-add{display:flex;gap:10px}
+.rem-add .input{flex:1}
+.rem-add .cta{width:auto;padding:14px 20px;white-space:nowrap}
+.rem-list{display:flex;flex-direction:column}
+.rem-row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-top:1px solid rgba(17,21,31,.1);cursor:pointer}
+.rem-row:first-child{border-top:0}
+.rem-row input{width:22px;height:22px;flex:none;accent-color:var(--ink)}
+.rem-text{flex:1;font-size:15px;line-height:1.4;text-wrap:pretty}
+.rem-row:has(input:checked) .rem-text{color:var(--ink-2);text-decoration:line-through}
+.rem-del{border:0;background:none;color:var(--ink-3);font-size:22px;line-height:1;width:32px;height:32px;flex:none;cursor:pointer;border-radius:50%}
+.rem-del:hover{background:rgba(17,21,31,.07);color:var(--ink)}
 .who-group{display:flex;flex-direction:column;gap:10px}
 .who-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .who-head .n{font:500 13px/1 var(--mono);color:var(--ink-2)}
@@ -544,6 +555,10 @@ const demo = (() => {
       { id: 'd4', name: 'Nico', status: 'capaz', party: 2, drinks: ['cerveza', 'otros'], beer_brand: 'Quilmes', other_drink: 'Gin tonic', baile: 'si', note: '', updated_at: t(9) },
       { id: 'd5', name: 'Sofi', status: 'si', party: 3, drinks: ['gaseosa', 'agua', 'cerveza'], beer_brand: 'Quilmes', other_drink: '', baile: 'no', note: '', updated_at: t(5) },
       { id: 'd6', name: 'Fede', status: 'no', party: 1, drinks: [], beer_brand: '', other_drink: '', baile: 'no', note: 'Viajo ese finde', updated_at: t(3) }
+    ], reminders: [
+      { id: 'r1', text: 'Male dijo que confirma el jueves', done: false },
+      { id: 'r2', text: 'Tío Walter, avisa cuando sepa del laburo', done: false },
+      { id: 'r3', text: 'Euge ya confirmó por privado', done: true }
     ] };
   };
   const load = () => {
@@ -565,7 +580,9 @@ const demo = (() => {
       save();
     },
     async adminList(pin) { guard(pin); return load().rsvps.map(x => ({ ...x })); },
-    async setEvent(pin, ev) { guard(pin); const d = load(); d.event = { ...d.event, ...ev }; save(); }
+    async setEvent(pin, ev) { guard(pin); const d = load(); d.event = { ...d.event, ...ev }; save(); },
+    async getReminders(pin) { guard(pin); return (load().reminders || []).map(x => ({ ...x })); },
+    async setReminders(pin, list) { guard(pin); const d = load(); d.reminders = list; save(); }
   };
 })();
 
@@ -585,7 +602,9 @@ const remote = (() => {
     publicCount: () => call('public_count'),
     submit: rec => call('submit_rsvp', { p_id: rec.id, p_name: rec.name, p_status: rec.status, p_party: rec.party, p_drinks: rec.drinks, p_beer_brand: rec.beer_brand, p_other_drink: rec.other_drink, p_baile: rec.baile, p_note: rec.note }),
     adminList: pin => call('admin_list', { p_pin: pin }),
-    setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url, p_pay_enabled: !!ev.pay_enabled, p_pay_amount: ev.pay_amount | 0 })
+    setEvent: (pin, ev) => call('admin_set_event', { p_pin: pin, p_menu: ev.menu, p_address: ev.address, p_maps_url: ev.maps_url, p_pay_enabled: !!ev.pay_enabled, p_pay_amount: ev.pay_amount | 0 }),
+    getReminders: pin => call('admin_get_reminders', { p_pin: pin }),
+    setReminders: (pin, list) => call('admin_set_reminders', { p_pin: pin, p_reminders: list })
   };
 })();
 
@@ -768,6 +787,7 @@ const mine = loadMine(); if (mine) { fillForm(mine); showDone(mine); }
 
 /* ============ PANEL DEL ANFITRIÓN ============ */
 let PIN = sess.get('cumple-pin') || '';
+let REMINDERS = [];
 const gate = $('#gate'), body = $('#adminBody');
 
 function tally(rows) {
@@ -812,6 +832,33 @@ function renderAdmin(rows) {
       arr.length
         ? h('ul', { class: 'who-list' }, [...arr].sort(byName).map(r => h('li', {}, r.name, k !== 'no' && r.party > 1 ? h('small', { text: ` +${r.party - 1}` }) : null)))
         : h('p', { class: 'cap', text: 'Nadie todavía.' }))));
+
+  // recordatorios (notas privadas: quién dijo que iba a confirmar)
+  const rem = h('section', { class: 'panel' },
+    h('div', {}, h('h3', { text: 'Recordatorios' }),
+      h('p', { class: 'cap', text: 'Anotá quién te dijo que te iba a confirmar (por ej. el jueves) y tildalo cuando te avise. Solo lo ves vos.' })));
+  const remInput = h('input', { class: 'input', id: 'remInput', type: 'text', maxlength: '140', placeholder: 'Ej: Fede dijo que confirma el jueves' });
+  const remList = h('div', { class: 'rem-list' });
+  let reminders = REMINDERS.map(r => ({ ...r }));
+  const persistReminders = () => api.setReminders(PIN, reminders).catch(() => toast('No se pudo guardar el recordatorio'));
+  const renderReminders = () => {
+    const pend = reminders.filter(r => !r.done), done = reminders.filter(r => r.done);
+    remList.replaceChildren(...[...pend, ...done].map(r => h('label', { class: 'rem-row' },
+      h('input', { type: 'checkbox', checked: r.done, onchange: e => { r.done = e.target.checked; renderReminders(); persistReminders(); } }),
+      h('span', { class: 'rem-text', text: r.text }),
+      h('button', { class: 'rem-del', type: 'button', 'aria-label': `Borrar "${r.text}"`, onclick: () => { reminders = reminders.filter(x => x !== r); renderReminders(); persistReminders(); } }, '×'))));
+    if (!reminders.length) remList.append(h('p', { class: 'cap', text: 'No tenés recordatorios pendientes.' }));
+  };
+  const addReminder = () => {
+    const text = remInput.value.trim();
+    if (!text) return;
+    reminders.push({ id: uuid(), text, done: false });
+    remInput.value = '';
+    renderReminders(); persistReminders();
+  };
+  const remForm = h('form', { class: 'rem-add', onsubmit: e => { e.preventDefault(); addReminder(); } }, remInput, h('button', { class: 'cta ghost', type: 'submit', text: 'Agregar' }));
+  renderReminders();
+  rem.append(remForm, remList);
 
   // cuánto comprar (reglas de Jere; se redondea hacia arriba por botella)
   const seguros = rows.filter(r => r.status === 'si'), conCapaz = rows.filter(r => r.status !== 'no');
@@ -921,13 +968,14 @@ function renderAdmin(rows) {
       } })));
 
   const refresh = h('button', { class: 'cta ghost', type: 'button', text: 'Actualizar respuestas', onclick: () => enterAdmin(PIN) });
-  body.replaceChildren(hero, who, buy, drinks, baile, list, evt, share, refresh);
+  body.replaceChildren(hero, who, rem, buy, drinks, baile, list, evt, share, refresh);
 }
 
 async function enterAdmin(pin) {
   const rows = await api.adminList(pin);
   PIN = pin; sess.set('cumple-pin', pin);
   try { event = await api.getEvent(); } catch {}
+  try { REMINDERS = await api.getReminders(pin); } catch { REMINDERS = []; }
   gate.hidden = true;
   renderAdmin(rows);
 }
